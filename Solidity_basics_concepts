@@ -1,0 +1,442 @@
+## What is solidity? 
+
+    1. High-level language typed programming language means human can easily understand and write the code. 
+    2. With Solidity you can create contracts for users such as voting, crowdfunding, blind auctions, multi-signature wallets. 
+    3. Case sensitive. 
+    4. For latest update- visit solidity documentation. 
+
+NOTE: you should follow established development best-practices when writing your smart contracts. 
+
+
+Sample code of Solidity:
+//SPDX-License-Identifier: MIT
+pragma solidity 0.8.19; //solidity versions
+
+contract Identity{
+    string name;
+    uint age;
+    uint256 number = 4;
+
+    constructor() {
+        name="Alice";
+        age=17;
+    }
+
+    function getName() view public returns(string memory){
+        return name;
+    }
+
+    function getAge() view public returns(uint256){
+        //return age;
+        return number;
+    }
+    function setAge() public{
+        age=age+1;
+    }
+    function numberSetting(uint256 num_add) public {
+        number=num_add;
+    }
+}
+
+
+State Variables:-
+=========================================================
+1. To change the default values of the state variable -
+ i) using the contracts constructor.
+    constructor() {
+        name="Alice";
+        age=17;
+    }
+ ii) Initializing the variable at declaration.
+
+    uint256 number = 4;
+ 
+ iii) Using the setter function. 
+
+    function setAge() public{
+        age=10;
+    }
+    function numberSetting(uint256 num_add) public {
+        number=num_add;
+    }
+
+2. Permanently stored in contract storage. so that's why gas cost is expensive so use wisly.
+3. Cost gas (expensive).
+4. Storage not dynamically allocated. (you need to compiler every time whenever you chages the state variables.)    
+5. Instance of the contract cannot have other state variable besides those already declared.
+
+
+Local Variables:-
+==============================================================
+1.local variables are those who declare in function body.
+2.store in stack not in contract storage.
+3. Don't gas cost.
+4. Memory keyword can't be used at contract level.
+
+contract myteam{
+    function store() pure public returns(uint){
+        uint age=10;
+        string memory name="Alice";
+        return age;
+    }
+}
+//pure define that the variable taken by function will be local variable or for modification. and if it view then it wil only allow read state variable or outside the function.
+//string bydefault store in storage level means contract storage so that's why we write memory after that. in local only. 
+
+
+Functions - Setters and Getters
+===============================================================
+contract local{
+    uint age=10;
+
+    function getter() public view returns(uint){
+        return age;
+    }
+    function setter() public{
+        age=age+1;
+    }
+
+    //argument bhi pass kr sakte hai in function like this.
+    function setter(uint newage) public{
+        age=newage;
+    }
+}
+
+getter : we don't need to pay gas becuase we just call the value for read only.
+setter : we need to pay gas fees because here we can modify the value.
+
+1. when you call a setter function it creates a transaction that needs to be mined and costs gas because it changes the blockchain. Vice Versa for getter function.
+2. When you declare a public state variable a getter function is automatically created.
+3. By default variable visibility is private.
+
+
+View and Pure:
+===================================================================
+view: you can read your state variable.
+pure: you can't read and write your state variable.
+
+
+constructor:
+===================================================================
+1. executed only once.
+2. you can create only one constructor and that is optional.
+3. A default constructor is created by the compiler if there is no explicitly defined constructor.
+
+Integers:
+==================================================================
+Int and Uint (unsigned integers)
+Signed and unsigned integers can be of various sizes.
+
+int8 to int256 
+int alias to int256   // alias is like not using number after int and uint  so it take default int256.
+
+By default an int is Initialized to 0. because there is no null concept in solidity.
+Overflow get detected at compile time.
+
+Range:---
+------------
+int8 : -128 to 127 ( -2^(n-1) to 2^(n-1)-1 ) 
+uint8: 0 to 255  (  0 to 2^(n)-1  )
+
+
+ARRAY
+====================================================================================
+contract Array{
+    uint [4] public arr = [10,20,40,55];
+
+    function setter(uint index, uint value) public{
+        arr[index] = value;
+    }
+}
+
+dynamic array:-
+------------------------------------
+contract Array{
+    uint[] public arr;
+
+    function pushElement(uint item) public{
+        arr.push(item);
+    }
+
+    function len() public view returns(uint){
+        return arr.length;
+    }
+    function popElement() public{              //pop will remove one last element from the array.
+        arr.pop();
+    }
+}
+
+
+Byte Array
+====================================================================================
+1 byte = 8 bits
+1 hexadecimal digit = 4 bits
+Everything that will be stored in the byte array will be in the form of hexadecimal digits.
+
+contract array{
+    bytes3 public b3;
+    bytes2 public b2;
+
+    function setter() public{
+        b3='abc';
+        b2='ab;
+    }
+}
+it will show like 616263 according to ASCII table.
+fixed-size array.
+
+Dynamic size array
+-----------------------------------
+contract Array{
+    bytes public b1="abc";
+
+    function pushElement() public{
+        b1.push('d);
+    }
+
+    funciton getEelement(unit i) public view returns(bytes){
+        return b1[i];
+    }
+
+    function getElememtleng() public view ruturns(uint){
+        return b1.length;
+    }
+
+    function getPopElement() public{   //try this
+        b1.pop();
+    }
+}
+
+Loops
+====================================================================
+Types of loops
+1. while 
+2. For
+3. Do-while
+
+contract Array{
+    uint[3] public arr;
+    uint public count;
+
+
+function loop() public{
+    while(count<arr.length){
+        arr[count]=count;
+        count++;
+    }
+}
+
+function loop1() punlic{
+    for(uint i=count; i<arr.length; i++){
+        arr[count]=count;
+        count++;
+    }
+}
+
+function loop2() public{
+    do{
+        arr[count]=count;
+        count++;
+    }while(count<arr.length);
+}
+}
+
+if-else
+====================================================================
+contract Array{
+    function check(int a) public push returns(string memory){
+        string memory value;
+
+        if(a>0){
+            value="greater then zero";
+        }
+        else if(a==0){
+            value="equal to zero";
+        }
+        else{
+            value="less then zero";
+        }
+
+        return value;
+    }
+}
+
+Booleans
+==========================================================================================
+contract Array{
+    bool public value;
+
+    function check(uint a ) public returns(bool){
+        if (a>100){
+            value=true;
+            return value;
+        }
+        else{
+            value=false;
+            return value;
+        }
+    }
+}
+
+
+Struct datatype (user defined datatype)
+======================================================================================
+you can create outside and inside from the contract.
+
+struct Student{
+    uint roll;
+    string name;
+}
+
+contract Demo{
+    Student public s1;
+
+    constructor(uint _roll, string memory _name){
+        s1.roll =_roll;
+        s1.name=_name;
+    }
+    function change(uint _roll, string memory _name) public {
+        Student memory new_student=Student({
+            roll:_roll,
+            name:_name;
+        });
+        s1=new_student;
+    }
+}
+
+
+Enum (when we assign particular intergral value or constant value ko name assign kartea hai usko hi Enum kehte hai)
+======================================================================================
+contract State{
+    enum user{allowed, not_allowed, wait}  //enum should be short then it easy to use.
+
+    user public u1= user.allowed;
+    uint public lottery=1000;
+    
+    function owner() public {
+        if(u1==user.allowed){
+            lottery=0;
+        }
+    }
+    function changeOwner() public{
+        u1=user.not_allowed;
+    }
+}
+
+
+Mapping A
+====================================================================================
+Concept of keys and values.
+mapping (key => value)
+
+contract demo{
+    mapping(uint => string) public roll_no;
+
+    function setter(uint keys, string memory value) public{
+        roll_no[keys]= value;
+    }
+}
+
+Mapping B
+====================================================================================
+
+contract demo{
+   struct Student{
+    string name;
+    uint class;
+   }
+
+    mapping(uint => Student) public data;
+
+    function setter(uint _roll,uint _class, string memory _name) public{
+        data[_roll]= Student(_class,_name);
+    }
+}
+
+The key cannnot be types mapping , dynamic array, enum and struct. 
+The value can be of any type.
+Mappings are always stored in storage irrespective of whether they are declared in contract in contract storage or not.
+
+Storage Vs Memory
+======================================================================================
+Storage:
+1. Holds State Variables.
+2. Persistent
+3. Cost gas
+4. Link a computer HDD
+
+Memory:
+1. Holds local variables defined inside functions if they are reference types.
+2. Not Persistent
+3. No Gas
+4. Like a computer RAM
+
+contract demo{
+    string[] public student=['Ravi','Rita'];
+
+    function mem() public view{
+        string[] memory s1=student;
+        s1[0]='Akash';
+    }
+    function sto() public{
+        string[] storage s1=student;
+        s1[0]='Akash';
+    }
+}
+
+GLOBAL Variable
+======================================================================================
+
+contract demo{
+    function getter() public view returns(uint block_no, uint timestamp, address msgSender){
+        return(block.number,block.timestamp,msg.sender);
+    }
+}
+
+
+Payble 
+======================================================================================
+contract pay{
+    function payEther() public payable{
+
+    }
+    function getBalance() public view returns(uint){
+        return address(this).balance;
+    }
+}
+
+------------------------------------------------------------------
+contract pay{
+    address payable user=payable(340503453iklh4345-8345-845545383);
+    function payEther() public payable{
+
+    }
+    function getBalance() public view returns(uint){
+        return address(this).balance;
+    }
+    function sendEtherAccount() public{
+        user.transfer(1 ether);
+    }
+}
+
+
+public,private,internal and external
+======================================================================================
+contract A{
+    function f1() public pure returns(uint){
+        return 1;
+    }
+    function f2() private pure returns(uint){
+        return 2;
+    }
+    function f3() internal pure returns(uint){
+        return 3;
+    }
+    function f4() external pure returns(uint){
+        return 4;
+    }
+}
+
+contract B is A{
+    uint public bx=f3();
+}
