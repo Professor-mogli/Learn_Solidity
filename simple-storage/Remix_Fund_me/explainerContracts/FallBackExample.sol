@@ -25,4 +25,4 @@ contract FallbackExample {
 //     /   \
 //   yes   no
 //  /        \
-//receive()  fallback()
+//receive()  fallback() 
